@@ -24,9 +24,13 @@ print("0. Removed Timestamp column")
 
 # 0.5. Rename and standardize dialect column
 df = df.rename(columns={'Which dialect do you speak': 'Dialect'})
-# Extract dialect type and standardize
-df['Dialect'] = df['Dialect'].str.lower()
-df['Dialect'] = df['Dialect'].apply(lambda x: 'north' if 'noth' in str(x) else ('south' if 'south' in str(x) else 'other'))
+# Map dialect values to standardized codes
+mapping = {
+    "Northern Pashto (Mardan, Charsadda, Peshawar)": "north",
+    "Central Pashto": "central",
+    "Kandahari": "south"
+}
+df["Dialect"] = df["Dialect"].map(mapping)
 print("0.5. Renamed dialect column and standardized entries")
 
 # 1. Remove duplicate rows
@@ -100,15 +104,17 @@ print(df['Script_Type'].value_counts())
 roman_script_df = df[df['Script_Type'] == 'Roman_Script'].copy()
 pashto_script_df = df[df['Script_Type'] == 'Pashto_Script'].copy()
 mixed_script_df = df[df['Script_Type'] == 'Mixed'].copy()
+roman_mixed_df = df[df['Script_Type'] != 'Pashto_Script'].copy()
 
 print("\nRoman script entries:", len(roman_script_df))
 print("Pashto script entries:", len(pashto_script_df))
 print("Mixed script entries:", len(mixed_script_df))
+print("Roman + Mixed entries saved to cleaned_data.csv:", len(roman_mixed_df))
 
 # ==================== SAVE CLEANED DATA ====================
 
-# Save main cleaned data
-df.to_csv('cleaned_data.csv', index=False)
+# Save main cleaned data without Pashto-script rows
+roman_mixed_df.to_csv('cleaned_data.csv', index=False)
 print("\n✓ Cleaned data saved to 'cleaned_data.csv'")
 
 # Save script-separated tables to respective folders
@@ -119,9 +125,20 @@ roman_script_df_export.to_csv('roman_script_data/cleaned_data_roman_script.csv',
 pashto_script_df.to_csv('pashto_script_data/cleaned_data_pashto_script.csv', index=False)
 mixed_script_df.to_csv('pashto_script_data/cleaned_data_mixed_script.csv', index=False)
 
+# Save cleaned summary and response tables for the combined Roman+Mixed dataset
+cleaned_summary_table = roman_mixed_df[['Dialect', 'District', 'Script_Type']].copy()
+cleaned_summary_table.insert(0, 'Id', range(1, len(cleaned_summary_table) + 1))
+cleaned_summary_table.to_csv('cleaned_data_summary_table.csv', index=False)
+
+cleaned_responses_table = roman_mixed_df[['Concatenated_Responses', 'Script_Type']].copy()
+cleaned_responses_table.insert(0, 'Id', range(1, len(cleaned_responses_table) + 1))
+cleaned_responses_table.to_csv('cleaned_data_responses_table.csv', index=False)
+
 print("✓ Roman script data saved to 'roman_script_data/cleaned_data_roman_script.csv'")
 print("✓ Pashto script data saved to 'pashto_script_data/cleaned_data_pashto_script.csv'")
 print("✓ Mixed script data saved to 'pashto_script_data/cleaned_data_mixed_script.csv'")
+print("✓ Cleaned summary table saved to 'cleaned_data_summary_table.csv'")
+print("✓ Cleaned response table saved to 'cleaned_data_responses_table.csv'")
 
 # ==================== CREATE ORGANIZED TABLES ====================
 

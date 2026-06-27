@@ -17,12 +17,11 @@ Id,Dialect,District,Script_Type
 16,north,Mardan,Roman_Script
 17,north,Buner,Roman_Script
 18,north,Buner,Roman_Script
-19,north,Buner,Pashto_Script
-20,north,Charsadda ,Roman_Script
-21,north,Mardan,Roman_Script
-22,north,Buner ,Roman_Script
-23,north,Nowshera ,Roman_Script
+19,north,Charsadda ,Roman_Script
+20,north,Mardan,Roman_Script
+21,north,Buner ,Roman_Script
+22,north,Nowshera ,Roman_Script
+23,north,Mardan ,Roman_Script
 24,north,Mardan ,Roman_Script
-25,north,Mardan ,Roman_Script
-26,other,Buner ,Roman_Script
-27,north,Mardan ,Roman_Script
+25,other,Buner ,Roman_Script
+26,north,Mardan ,Roman_Script
